@@ -1,8 +1,16 @@
-import pool from "../db/pool.js";
+import prisma from "../lib/prisma.js";
 
-export default async function userExists(email: string) {
-  const result = await pool.query("SELECT 1 FROM users WHERE email = ($1);", [
-    email,
-  ]);
-  return result.rows.length > 0;
+export default async function userExists(userEmail: string) {
+  try {
+    const user = await prisma.user.findUnique({
+      where: {
+        email: userEmail,
+      },
+      select: { id: true },
+    });
+    return !!user;
+  } catch (err) {
+    console.log("Error checking if user exists: ", err);
+    return false;
+  }
 }

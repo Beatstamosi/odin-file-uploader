@@ -3,10 +3,12 @@ import cors from "cors";
 import path from "path";
 import { fileURLToPath } from "url";
 import dotenv from "dotenv";
-import session from "express-session";
 import passport from "passport";
 import authRouter from "./routes/auth.js";
 import "./config/passport.js";
+import expressSession from "express-session";
+import { PrismaSessionStore } from "@quixo3/prisma-session-store";
+import prisma from "./lib/prisma.js";
 
 // Give access to environment variables
 dotenv.config();
@@ -26,15 +28,18 @@ if (!sessionSecret) {
 }
 
 app.use(
-  session({
+  expressSession({
+    cookie: {
+      maxAge: 7 * 24 * 60 * 60 * 1000, // ms
+    },
     secret: sessionSecret,
     resave: false,
     saveUninitialized: false,
-    cookie: {
-      secure: false, // true if using HTTPS
-      httpOnly: true,
-      sameSite: "lax", // adjust if needed
-    },
+    store: new PrismaSessionStore(prisma, {
+      checkPeriod: 2 * 60 * 1000, //ms
+      dbRecordIdIsSessionId: true,
+      dbRecordIdFunction: undefined,
+    }),
   })
 );
 

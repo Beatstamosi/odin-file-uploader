@@ -1,18 +1,18 @@
 import passport from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
-import pool from "../db/pool.js";
 import bcrypt from "bcryptjs";
+import prisma from "../lib/prisma.js";
 
 passport.use(
   new LocalStrategy(
     { usernameField: "email" },
     async (email, password, done) => {
       try {
-        const { rows } = await pool.query(
-          "SELECT * FROM users WHERE email = $1",
-          [email]
-        );
-        const user = rows[0];
+        const user = await prisma.user.findUnique({
+          where: {
+            email: email,
+          },
+        });
 
         if (!user) {
           return done(null, false, { message: "Incorrect Email" });
@@ -34,12 +34,11 @@ passport.serializeUser((user, done) => {
   done(null, user.id);
 });
 
-passport.deserializeUser(async (id, done) => {
+passport.deserializeUser(async (userId: string, done) => {
   try {
-    const { rows } = await pool.query("SELECT * FROM users WHERE id = $1", [
-      id,
-    ]);
-    const user = rows[0];
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+    });
 
     done(null, user);
   } catch (err) {

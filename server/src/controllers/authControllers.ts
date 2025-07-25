@@ -1,9 +1,9 @@
 import passport from "passport";
 import bcrypt from "bcryptjs";
-import pool from "../db/pool.js";
 import { User } from "../types/User.js";
 import { Request, Response, NextFunction } from "express";
 import userExists from "../services/userServices.js";
+import prisma from "../lib/prisma.js";
 
 const signUpHandler = async (req: Request, res: Response) => {
   try {
@@ -11,10 +11,14 @@ const signUpHandler = async (req: Request, res: Response) => {
 
     if (!exists) {
       const hashedPassword = await bcrypt.hash(req.body.password, 10);
-      await pool.query(
-        "INSERT INTO users (firstName, lastName, email, password ) VALUES ($1, $2, $3, $4)",
-        [req.body.firstName, req.body.lastName, req.body.email, hashedPassword]
-      );
+      await prisma.user.create({
+        data: {
+          email: req.body.email,
+          firstname: req.body.firstName,
+          lastname: req.body.lastName,
+          password: hashedPassword,
+        },
+      });
       res.status(201).json({ message: "User signed up successfully." });
     } else {
       res.status(409).json({ error: "User already exists." });
@@ -55,15 +59,13 @@ const loginHandler = (req: Request, res: Response, next: NextFunction) => {
 function getUser(req: Request, res: Response) {
   if (req.isAuthenticated()) {
     // Send limited user data (avoid sending password, etc.)
-    const { id, email, firstname, lastname, member, admin } = req.user;
+    const { id, email, firstname, lastname } = req.user;
     res.json({
       user: {
         id,
         email,
         firstName: firstname,
         lastName: lastname,
-        member,
-        admin,
       },
     });
   } else {

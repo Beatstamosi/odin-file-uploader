@@ -8,6 +8,7 @@ import {
 } from "../controllers/authControllers.js";
 import { validateSignUp } from "../middlewares/validateSignUp.js";
 import { handleValidationErrors } from "../middlewares/handleValidationErrors.js";
+import { validateLogin } from "../middlewares/validateLogin.js";
 
 const authRouter = Router();
 
