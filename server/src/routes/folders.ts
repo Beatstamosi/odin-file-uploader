@@ -1,7 +1,10 @@
 import { Router } from "express";
 import { validateFolderName } from "../middlewares/validateFolder.js";
 import { handleValidationErrors } from "../middlewares/handleValidationErrors.js";
-import { createNewFolder } from "../controllers/foldersControllers.js";
+import {
+  createNewFolder,
+  getFolderContent,
+} from "../controllers/foldersControllers.js";
 
 const foldersRouter = Router();
 
@@ -12,5 +15,7 @@ foldersRouter.post(
   handleValidationErrors,
   createNewFolder
 );
+
+foldersRouter.get("/get-folder/:folderid", getFolderContent);
 
 export default foldersRouter;

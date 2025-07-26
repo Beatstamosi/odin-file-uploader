@@ -5,6 +5,7 @@ import Login from "./Authentication/Login/Login.jsx";
 import SignUp from "./Authentication/Sign Up/SignUp.jsx";
 import RequireAuth from "./Authentication/RequireAuth.jsx";
 import Home from "./Home/Home.js";
+import FolderContent from "./FolderContent/FolderContent.js";
 
 const routes = [
   {
@@ -22,7 +23,7 @@ const routes = [
       },
       {
         path: "/:folderid",
-        element: <Home />,
+        element: <FolderContent />,
       },
     ],
   },
@@ -41,6 +42,10 @@ const routes = [
         <LogOut />
       </RequireAuth>
     ),
+  },
+  {
+    path: "/error",
+    element: <ErrorPage />,
   },
 ];
 

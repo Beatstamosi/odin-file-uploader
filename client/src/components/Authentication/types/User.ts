@@ -8,7 +8,7 @@ export type User = {
   files?: File[];
 };
 
-type Folder = {
+export type Folder = {
   id: string;
   name: string;
   parentFolderId: string | null;
