@@ -26,4 +26,41 @@ model User {
   firstname String
   lastname  String
   password  String
+
+  // Relations
+  folders Folder[]
+  files   File[]
+}
+
+model Folder {
+  id   String @id @default(uuid())
+  name String
+
+  // Self-referencing parent-child folder relation
+  parentFolder   Folder? @relation("FolderToFolder", fields: [parentFolderId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  parentFolderId String?
+
+  children Folder[] @relation("FolderToFolder")
+
+  // Owner
+  owner   User   @relation(fields: [ownerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  ownerId String
+
+  // Files inside this folder
+  files File[]
+}
+
+model File {
+  id       String   @id @default(uuid())
+  name     String
+  size     Int // Size in bytes
+  uploaded DateTime @default(now())
+  url      String
+
+  // Relations
+  folder   Folder @relation(fields: [folderId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  folderId String
+
+  owner   User   @relation(fields: [ownerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  ownerId String
 }

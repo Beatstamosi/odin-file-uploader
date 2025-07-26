@@ -4,6 +4,7 @@ import LogOut from "./Authentication/LogOut/LogOut.jsx";
 import Login from "./Authentication/Login/Login.jsx";
 import SignUp from "./Authentication/Sign Up/SignUp.jsx";
 import RequireAuth from "./Authentication/RequireAuth.jsx";
+import Home from "./Home/Home.js";
 
 const routes = [
   {
@@ -14,6 +15,12 @@ const routes = [
       </RequireAuth>
     ),
     errorElement: <ErrorPage />,
+    children: [
+      {
+        index: true,
+        element: <Home />,
+      },
+    ],
   },
   {
     path: "/login",
