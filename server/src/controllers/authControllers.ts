@@ -65,7 +65,6 @@ const loginHandler = (req: Request, res: Response, next: NextFunction) => {
 
 function getUser(req: Request, res: Response) {
   if (req.isAuthenticated()) {
-    console.log(req.user);
     // Send limited user data (avoid sending password, etc.)
     const { id, email, firstname, lastname, folders, files } = req.user;
     res.json({

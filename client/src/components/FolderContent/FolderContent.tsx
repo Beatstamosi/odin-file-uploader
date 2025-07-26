@@ -1,7 +1,7 @@
 import { useAuth } from "../Authentication/useAuth";
-import styles from "./Home.module.css";
+import styles from "./FolderContent.module.css";
 
-function Home() {
+function FolderContent() {
   const { user } = useAuth();
 
   return (
@@ -13,4 +13,4 @@ function Home() {
   );
 }
 
-export default Home;
+export default FolderContent;

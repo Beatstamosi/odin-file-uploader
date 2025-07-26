@@ -9,6 +9,7 @@ import "./config/passport.js";
 import expressSession from "express-session";
 import { PrismaSessionStore } from "@quixo3/prisma-session-store";
 import prisma from "./lib/prisma.js";
+import foldersRouter from "./routes/folders.js";
 
 // Give access to environment variables
 dotenv.config();
@@ -60,6 +61,7 @@ if (process.env.NODE_ENV === "development") {
 
 // Authentication Route
 app.use("/user", authRouter);
+app.use("/folders", foldersRouter);
 
 // API route example
 app.get("/", (req, res) => res.render("index", { user: req.user }));

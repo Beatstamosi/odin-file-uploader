@@ -20,6 +20,10 @@ const routes = [
         index: true,
         element: <Home />,
       },
+      {
+        path: "/:folderid",
+        element: <Home />,
+      },
     ],
   },
   {
