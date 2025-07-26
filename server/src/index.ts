@@ -47,12 +47,6 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
-// Give access to local user to all views --> NOT NEEDED FOR REACT
-app.use((req, res, next) => {
-  res.locals.currentUser = req.user;
-  next();
-});
-
 // Enable CORS only in dev
 if (process.env.NODE_ENV === "development") {
   app.use(
