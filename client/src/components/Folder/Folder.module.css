@@ -5,10 +5,11 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: lightgray;
+  background-color: rgb(233, 230, 230);
   border-radius: 5px;
   padding: 10px;
   box-shadow: 2px 2px 2px darkgrey;
+  position: relative;
 }
 
 .folderWrapper:hover {
@@ -18,4 +19,42 @@
 .menu:hover {
   transform: scale(1.2);
   cursor: pointer;
+}
+
+.optionsMenu {
+  position: absolute;
+  top: 100%; /* right below the hamburger */
+  left: 80%;
+  width: 200px;
+  background: white;
+  padding: 5px 0px;
+  border: 1px solid #ccc;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  z-index: 100;
+}
+
+.optionsMenu button {
+  border: none;
+  border-radius: 0px;
+}
+
+.optionDelete,
+.optionShare {
+  padding: 2px 2px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 30px;
+  padding-left: 10px;
+  font-weight: 400;
+}
+
+.optionDelete:hover {
+  background-color: red;
+  color: white;
+}
+
+.optionShare:hover {
+  background-color: blue;
+  color: white;
 }
