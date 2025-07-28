@@ -31,7 +31,7 @@ const createNewFolder = async (req: Request, res: Response) => {
 
   try {
     const parentFolderId =
-      req.params.folderid ?? (await getRootFolderId(req.user.id));
+      req.body.parentFolder ?? (await getRootFolderId(req.user.id));
 
     const result = await prisma.folder.create({
       data: {
@@ -75,4 +75,68 @@ const getFolderContent = async (req: Request, res: Response) => {
   }
 };
 
-export { createNewFolder, getFolderContent };
+const getFolderPath = async (req: Request, res: Response) => {
+  if (!req.params?.folderid) {
+    return res.status(401).json({ error: "Missing folder Id." });
+  }
+
+  try {
+    let folders = [];
+
+    let current = await prisma.folder.findUnique({
+      where: {
+        id: req.params.folderid,
+      },
+    });
+
+    folders.push(current?.name);
+
+    while (current?.parentFolderId) {
+      let parent = await prisma.folder.findUnique({
+        where: {
+          id: current.parentFolderId,
+        },
+      });
+
+      folders.push(parent?.name);
+      current = parent;
+    }
+
+    const path = folders.reverse().join(" / ");
+
+    res.status(200).json({ path });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed to fetch folder path" });
+  }
+};
+
+const getRootFolder = async (req: Request, res: Response) => {
+  if (!req.user?.id) {
+    return res.status(401).json({ error: "Unauthorized: No user ID." });
+  }
+
+  try {
+    const result = await prisma.folder.findFirst({
+      where: {
+        ownerId: req.user?.id,
+        parentFolderId: null,
+      },
+      include: {
+        files: true,
+        children: true,
+      },
+    });
+
+    if (result) {
+      res.status(201).json({ folder: result });
+    } else {
+      throw new Error("Root Folder could not be fetched.");
+    }
+  } catch (err) {
+    console.error("Error fetching root folder: ", err);
+    throw err;
+  }
+};
+
+export { createNewFolder, getFolderContent, getFolderPath, getRootFolder };

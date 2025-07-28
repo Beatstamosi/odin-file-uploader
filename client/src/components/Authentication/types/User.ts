@@ -4,15 +4,18 @@ export type User = {
   firstName: string;
   lastName: string;
   password?: string;
-  folders?: Folder[];
+  folders?: FolderType[];
   files?: File[];
 };
 
-export type Folder = {
+export type FolderType = {
   id: string;
   name: string;
   parentFolderId: string | null;
   ownerId: string;
+  parentFolder?: FolderType;
+  children?: FolderType[];
+  files?: File[];
 };
 
 type File = {

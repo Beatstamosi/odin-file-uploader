@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
-import { useAuth } from "../Authentication/useAuth";
 import styles from "./FolderContent.module.css";
 import { useNavigate, useParams } from "react-router-dom";
-import type { Folder } from "../Authentication/types/User";
+import type { FolderType } from "../Authentication/types/User";
+import FolderPath from "../FolderPath/FolderPath";
+import Folder from "../Folder/Folder.js";
 
 function FolderContent() {
-  const { user } = useAuth();
-  const [folder, setFolder] = useState<Folder[]>();
+  const [folder, setFolder] = useState<FolderType>();
   const navigate = useNavigate();
   const params = useParams().folderid;
 
@@ -39,18 +39,18 @@ function FolderContent() {
     fetchFolder();
   }, [params, navigate]);
 
-  console.log(folder);
-
   // DISPLAY FOLDER CONTENTS & PATH
-  // BUILD PATH VIA parentfolders
   // MAP THROUGH CHILDREN AND DISPLAY FOLDER COMPONENT
   // MAP THROUGH FILES AND DISPLAY FILE COMPONENTS
 
   return (
     <div className={styles.pageWrapper}>
-      <h2>Folder Content</h2>
-      <h2>{user?.folders?.[0]?.name ?? "No folder found"}</h2>
-      <p>Display Folders</p>
+      {folder && <FolderPath folder={folder} />}
+      <div className={styles.folderWrapper}>
+        {folder?.children?.map((folder) => (
+          <Folder key={folder.id} folder={folder} />
+        ))}
+      </div>
       <p>Display Files</p>
     </div>
   );

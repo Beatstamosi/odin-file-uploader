@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 type DialogNewFolderProps = {
   dialogRef: React.RefObject<HTMLDialogElement | null>;
@@ -23,6 +23,7 @@ function DialogNewFolder({
 }: DialogNewFolderProps) {
   const [folderName, setFolderName] = useState("");
   const navigate = useNavigate();
+  const parentFolder = useParams().folderid;
 
   const handleSubmitNewFolder = async () => {
     try {
@@ -36,6 +37,7 @@ function DialogNewFolder({
           credentials: "include",
           body: JSON.stringify({
             name: folderName,
+            parentFolder: parentFolder,
           }),
         }
       );

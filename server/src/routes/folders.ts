@@ -4,6 +4,8 @@ import { handleValidationErrors } from "../middlewares/handleValidationErrors.js
 import {
   createNewFolder,
   getFolderContent,
+  getFolderPath,
+  getRootFolder,
 } from "../controllers/foldersControllers.js";
 
 const foldersRouter = Router();
@@ -17,5 +19,8 @@ foldersRouter.post(
 );
 
 foldersRouter.get("/get-folder/:folderid", getFolderContent);
+
+foldersRouter.get("/:folderid/path", getFolderPath);
+foldersRouter.get("/get-home-folder", getRootFolder);
 
 export default foldersRouter;
