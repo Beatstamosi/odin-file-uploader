@@ -10,8 +10,6 @@ function FolderContent() {
   const navigate = useNavigate();
   const params = useParams().folderid;
 
-  console.log(params);
-
   useEffect(() => {
     const fetchFolder = async () => {
       try {

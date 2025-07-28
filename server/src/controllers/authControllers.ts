@@ -5,6 +5,7 @@ import { Request, Response, NextFunction } from "express";
 import userExists from "../services/userServices.js";
 import prisma from "../lib/prisma.js";
 
+// create empty root folder for each user on sign up
 const signUpHandler = async (req: Request, res: Response) => {
   try {
     const exists = await userExists(req.body.email);
@@ -21,6 +22,7 @@ const signUpHandler = async (req: Request, res: Response) => {
             create: [
               {
                 name: "Home",
+                parentFolderId: null,
               },
             ],
           },

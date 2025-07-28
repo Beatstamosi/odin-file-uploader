@@ -1,17 +1,37 @@
 import { Request, Response } from "express";
 import prisma from "../lib/prisma.js";
 
-const createNewFolder = async (req: Request, res: Response) => {
-  console.log(req.user);
-  console.log(req.body.name);
-  console.log(req.params.folderid);
+const getRootFolderId = async (userId: string) => {
+  try {
+    const result = await prisma.folder.findFirst({
+      where: {
+        ownerId: userId,
+        parentFolderId: null,
+      },
+      select: {
+        id: true,
+      },
+    });
 
+    if (result) {
+      return result.id;
+    } else {
+      throw new Error("Folder could not be created");
+    }
+  } catch (err) {
+    console.error("Error creating folder: ", err);
+    throw err;
+  }
+};
+
+const createNewFolder = async (req: Request, res: Response) => {
   if (!req.user?.id) {
     return res.status(401).json({ error: "Unauthorized: No user ID." });
   }
 
   try {
-    const parentFolderId = req.params.folderid ?? null;
+    const parentFolderId =
+      req.params.folderid ?? (await getRootFolderId(req.user.id));
 
     const result = await prisma.folder.create({
       data: {
@@ -33,8 +53,6 @@ const createNewFolder = async (req: Request, res: Response) => {
 };
 
 const getFolderContent = async (req: Request, res: Response) => {
-  console.log(req.params.folderid);
-
   try {
     const result = await prisma.folder.findUnique({
       where: {
