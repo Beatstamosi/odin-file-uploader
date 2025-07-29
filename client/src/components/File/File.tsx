@@ -5,6 +5,7 @@ import { RiDeleteBin5Line } from "react-icons/ri";
 import { IoShareOutline } from "react-icons/io5";
 import styles from "./File.module.css";
 import { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 
 type FileProps = {
   file: FileType;
@@ -16,6 +17,7 @@ type FileProps = {
 function File({ file }: FileProps) {
   const [showOptions, setShowOptions] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+  const navigate = useNavigate();
 
   const toggleOptions = () => {
     setShowOptions((prev) => !prev);
@@ -35,27 +37,36 @@ function File({ file }: FileProps) {
     };
   }, []);
 
-  //   const handleDeleteFolder = async (e: React.MouseEvent<HTMLButtonElement>) => {
-  //     e.preventDefault();
+  const handleDeleteFile = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
 
-  //     try {
-  //       const res = await fetch(
-  //         `${import.meta.env.VITE_API_BASE_URL}/folders/delete-folder/${
-  //           folder.id
-  //         }`,
-  //         {
-  //           method: "DELETE",
-  //           credentials: "include",
-  //         }
-  //       );
+    try {
+      const res = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/file/delete-file/${file.id}`,
+        {
+          method: "DELETE",
+          credentials: "include",
+        }
+      );
 
-  //       if (res.ok) {
-  //         navigate(-1);
-  //       }
-  //     } catch (err) {
-  //       console.error(err);
-  //     }
-  //   };
+      if (res.ok) {
+        navigate(0);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const downloadFile = (url: string, filename: string) => {
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    a.target = "blank"; // Suggests filename, browser may override
+    document.body.appendChild(a);
+    a.click();
+    toggleOptions();
+    document.body.removeChild(a);
+  };
 
   return (
     <div className={styles.folderWrapper} ref={menuRef}>
@@ -72,11 +83,17 @@ function File({ file }: FileProps) {
       <IoMenu size={"1.5em"} className={styles.menu} onClick={toggleOptions} />
       {showOptions && (
         <div className={styles.optionsMenu}>
-          <button className={styles.optionDelete}>
+          <button
+            className={styles.optionDelete}
+            onClick={(e) => handleDeleteFile(e)}
+          >
             <RiDeleteBin5Line size={"1.3em"} />
             <span>Delete File</span>
           </button>
-          <button className={styles.optionDownload}>
+          <button
+            className={styles.optionDownload}
+            onClick={() => downloadFile(file.url, file.name)}
+          >
             <IoShareOutline size={"1.3em"} />
             <span>Download File</span>
           </button>
