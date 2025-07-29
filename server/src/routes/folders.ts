@@ -7,6 +7,7 @@ import {
   getFolderContent,
   getFolderPath,
   getRootFolder,
+  getRootFolderIdPublic,
 } from "../controllers/foldersControllers.js";
 
 const foldersRouter = Router();
@@ -23,6 +24,7 @@ foldersRouter.get("/get-folder/:folderid", getFolderContent);
 
 foldersRouter.get("/:folderid/path", getFolderPath);
 foldersRouter.get("/get-home-folder", getRootFolder);
+foldersRouter.get("/get-home-folder-id", getRootFolderIdPublic);
 
 foldersRouter.delete("/delete-folder/:folderid", deleteFolder);
 

@@ -5,7 +5,7 @@ export type User = {
   lastName: string;
   password?: string;
   folders?: FolderType[];
-  files?: File[];
+  files?: FileType[];
 };
 
 export type FolderType = {
@@ -15,10 +15,10 @@ export type FolderType = {
   ownerId: string;
   parentFolder?: FolderType;
   children?: FolderType[];
-  files?: File[];
+  files?: FileType[];
 };
 
-type File = {
+export type FileType = {
   id: string;
   name: string;
   size: number;

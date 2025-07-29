@@ -69,8 +69,8 @@ function Folder({ folder }: FolderProps) {
       onDoubleClick={openFolderHandler}
       ref={menuRef}
     >
-      <FaFolder size={"1.5em"} />
-      <p>{folder.name}</p>
+      <FaFolder size="1.8em" color="#f4b400" />
+      <p title={folder.name}>{folder.name}</p>
       <IoMenu size={"1.5em"} className={styles.menu} onClick={toggleOptions} />
       {showOptions && (
         <div className={styles.optionsMenu}>

@@ -1,28 +1,6 @@
 import { Request, response, Response } from "express";
 import prisma from "../lib/prisma.js";
-
-const getRootFolderId = async (userId: string) => {
-  try {
-    const result = await prisma.folder.findFirst({
-      where: {
-        ownerId: userId,
-        parentFolderId: null,
-      },
-      select: {
-        id: true,
-      },
-    });
-
-    if (result) {
-      return result.id;
-    } else {
-      throw new Error("Folder could not be created");
-    }
-  } catch (err) {
-    console.error("Error creating folder: ", err);
-    throw err;
-  }
-};
+import { getRootFolderId } from "../services/getRootFolderId.js";
 
 const createNewFolder = async (req: Request, res: Response) => {
   if (!req.user?.id) {
@@ -142,6 +120,25 @@ const getRootFolder = async (req: Request, res: Response) => {
   }
 };
 
+const getRootFolderIdPublic = async (req: Request, res: Response) => {
+  if (!req.user?.id) {
+    return res.status(401).json({ error: "Unauthorized: No user ID." });
+  }
+
+  try {
+    const rootFolderId = await getRootFolderId(req.user.id);
+
+    if (rootFolderId) {
+      res.status(200).json({ rootFolderId });
+    } else {
+      throw new Error("Error getting rootFolderId");
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error });
+  }
+};
+
 const deleteFolder = async (req: Request, res: Response) => {
   if (!req.user?.id) {
     return res.status(401).json({ error: "Unauthorized: No user ID." });
@@ -176,4 +173,5 @@ export {
   getFolderPath,
   getRootFolder,
   deleteFolder,
+  getRootFolderIdPublic,
 };

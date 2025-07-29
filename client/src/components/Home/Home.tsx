@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import type { FolderType } from "../Authentication/types/User";
 import FolderPath from "../FolderPath/FolderPath";
 import Folder from "../Folder/Folder.js";
+import File from "../File/File.js";
 
 function Home() {
   const [folder, setFolder] = useState<FolderType>();
@@ -43,7 +44,11 @@ function Home() {
           <Folder key={folder.id} folder={folder} />
         ))}
       </div>
-      <p>Display Files</p>
+      <div className={styles.folderWrapper}>
+        {folder?.files?.map((file) => (
+          <File key={file.id} file={file} />
+        ))}
+      </div>
     </div>
   );
 }
