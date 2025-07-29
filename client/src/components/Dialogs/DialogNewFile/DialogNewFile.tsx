@@ -75,8 +75,10 @@ function DialogUploadFile({
     if (res.ok) {
       console.log("File metadata saved!");
       const { file } = await res.json();
-      closeDialogUploadFile();
-      navigate(`/${file.folderId}`);
+      if (file) {
+        closeDialogUploadFile();
+        navigate(0);
+      }
     } else {
       console.error("Failed to save file info");
     }

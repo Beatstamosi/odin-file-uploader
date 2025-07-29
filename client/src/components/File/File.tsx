@@ -11,9 +11,6 @@ type FileProps = {
   file: FileType;
 };
 
-// TODO: Add functionality to Delete File
-// TODO: Add functionality to Download File
-
 function File({ file }: FileProps) {
   const [showOptions, setShowOptions] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -68,6 +65,16 @@ function File({ file }: FileProps) {
     document.body.removeChild(a);
   };
 
+  const shareFile = async (url: string) => {
+    try {
+      await navigator.clipboard.writeText(url);
+      alert("Link copied to ClipBoard");
+      toggleOptions();
+    } catch (err) {
+      console.error("Failed to copy Link to clipboard: ", err);
+    }
+  };
+
   return (
     <div className={styles.folderWrapper} ref={menuRef}>
       <FaFile size={"1.5em"} />
@@ -97,7 +104,10 @@ function File({ file }: FileProps) {
             <IoShareOutline size={"1.3em"} />
             <span>Download File</span>
           </button>
-          <button className={styles.optionShare}>
+          <button
+            className={styles.optionShare}
+            onClick={() => shareFile(file.url)}
+          >
             <RiDeleteBin5Line size={"1.3em"} />
             <span>Share File</span>
           </button>
