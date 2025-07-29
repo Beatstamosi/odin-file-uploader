@@ -1,13 +1,19 @@
 import { useEffect, useState } from "react";
 import type { FolderType } from "../Authentication/types/User";
 import styles from "./FolderPath.module.css";
+import { Link } from "react-router-dom";
 
 type FolderPathProps = {
   folder: FolderType;
 };
 
+type Path = {
+  name: string | undefined;
+  id: string | undefined;
+};
+
 function FolderPath({ folder }: FolderPathProps) {
-  const [path, setPath] = useState("");
+  const [path, setPath] = useState<Path[]>();
 
   useEffect(() => {
     const fetchPath = async () => {
@@ -19,7 +25,7 @@ function FolderPath({ folder }: FolderPathProps) {
         const data = await res.json();
 
         if (res.ok) {
-          setPath(data.path);
+          setPath(data.folders);
         } else {
           throw new Error("Error fetching path");
         }
@@ -29,9 +35,18 @@ function FolderPath({ folder }: FolderPathProps) {
     };
 
     fetchPath();
-  });
+  }, [folder.id]);
 
-  return <div className={styles.pathWrapper}>{path}</div>;
+  return (
+    <div className={styles.pathWrapper}>
+      {path?.map((element, index) => (
+        <span key={element.id} className={styles.pathElement}>
+          <Link to={`/${element.id}`}>{element.name}</Link>
+          {index < path.length - 1 && <span>{">"}</span>}
+        </span>
+      ))}
+    </div>
+  );
 }
 
 export default FolderPath;

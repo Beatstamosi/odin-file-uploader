@@ -81,7 +81,10 @@ const getFolderPath = async (req: Request, res: Response) => {
   }
 
   try {
-    let folders = [];
+    let folders: {
+      name: string | undefined;
+      id: string | undefined;
+    }[] = [];
 
     let current = await prisma.folder.findUnique({
       where: {
@@ -89,7 +92,7 @@ const getFolderPath = async (req: Request, res: Response) => {
       },
     });
 
-    folders.push(current?.name);
+    folders.push({ name: current?.name, id: current?.id });
 
     while (current?.parentFolderId) {
       let parent = await prisma.folder.findUnique({
@@ -98,13 +101,13 @@ const getFolderPath = async (req: Request, res: Response) => {
         },
       });
 
-      folders.push(parent?.name);
+      folders.push({ name: parent?.name, id: parent?.id });
       current = parent;
     }
 
-    const path = folders.reverse().join(" / ");
+    folders = folders.reverse();
 
-    res.status(200).json({ path });
+    res.status(200).json({ folders });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Failed to fetch folder path" });
