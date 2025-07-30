@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import styles from "./SharedFolderContent.module.css";
 import { useNavigate, useParams } from "react-router-dom";
 import type { FolderType } from "../Authentication/types/User.js";
-import FolderPath from "../FolderPath/FolderPath.js";
 import SharedFolder from "../SharedFolder/SharedFolder.js";
 import SharedFile from "../SharedFiles/SharedFile.js";
 
@@ -37,7 +36,6 @@ function SharedFolderContent() {
 
   return (
     <div className={styles.pageWrapper}>
-      {folder && <FolderPath folder={folder} shared={true} />}
       <div className={styles.folderWrapper}>
         {folder?.children?.map((folder) => (
           <SharedFolder key={folder.id} folder={folder} />
