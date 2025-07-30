@@ -11,9 +11,6 @@ type FolderProps = {
   folder: FolderType;
 };
 
-// TODO: Add functionality to Delete Folder
-// TODO: Add functionality to Share Folder
-
 function Folder({ folder }: FolderProps) {
   const navigate = useNavigate();
   const [showOptions, setShowOptions] = useState(false);
@@ -63,6 +60,16 @@ function Folder({ folder }: FolderProps) {
     }
   };
 
+  const shareFolder = async (id: string) => {
+    try {
+      await navigator.clipboard.writeText(`http://localhost:5173/share/${id}`);
+      alert("Link to share folder copied to ClipBoard");
+      toggleOptions();
+    } catch (err) {
+      console.error("Failed to copy Link to clipboard: ", err);
+    }
+  };
+
   return (
     <div
       className={styles.folderWrapper}
@@ -81,7 +88,10 @@ function Folder({ folder }: FolderProps) {
             <RiDeleteBin5Line size={"1.3em"} />
             <span>Delete Folder</span>
           </button>
-          <button className={styles.optionShare}>
+          <button
+            className={styles.optionShare}
+            onClick={() => shareFolder(folder.id)}
+          >
             <IoShareOutline size={"1.3em"} />
             <span>Share Folder</span>
           </button>

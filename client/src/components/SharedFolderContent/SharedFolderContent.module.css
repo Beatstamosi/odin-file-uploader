@@ -1,0 +1,9 @@
+.pageWrapper {
+  padding: 0px 20px;
+}
+
+.folderWrapper {
+  padding: 20px;
+  display: flex;
+  flex-wrap: wrap;
+}

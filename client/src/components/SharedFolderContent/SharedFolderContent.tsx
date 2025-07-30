@@ -1,28 +1,23 @@
 import { useEffect, useState } from "react";
-import styles from "./FolderContent.module.css";
+import styles from "./SharedFolderContent.module.css";
 import { useNavigate, useParams } from "react-router-dom";
-import type { FolderType } from "../Authentication/types/User";
-import FolderPath from "../FolderPath/FolderPath";
-import Folder from "../Folder/Folder.js";
-import File from "../File/File.js";
+import type { FolderType } from "../Authentication/types/User.js";
+import FolderPath from "../FolderPath/FolderPath.js";
+import SharedFolder from "../SharedFolder/SharedFolder.js";
+import SharedFile from "../SharedFiles/SharedFile.js";
 
-function FolderContent() {
+function SharedFolderContent() {
   const [folder, setFolder] = useState<FolderType>();
   const navigate = useNavigate();
-  const params = useParams().folderid;
+  const params = useParams().folderId;
 
   useEffect(() => {
     const fetchFolder = async () => {
       try {
         const res = await fetch(
-          `${import.meta.env.VITE_API_BASE_URL}/folders/get-folder/${params}`,
-          {
-            method: "GET",
-            headers: {
-              "Content-type": "application/json",
-            },
-            credentials: "include",
-          }
+          `${
+            import.meta.env.VITE_API_BASE_URL
+          }/folders/get-shared-folder/${params}`
         );
 
         const data = await res.json();
@@ -42,19 +37,19 @@ function FolderContent() {
 
   return (
     <div className={styles.pageWrapper}>
-      {folder && <FolderPath folder={folder} />}
+      {folder && <FolderPath folder={folder} shared={true} />}
       <div className={styles.folderWrapper}>
         {folder?.children?.map((folder) => (
-          <Folder key={folder.id} folder={folder} />
+          <SharedFolder key={folder.id} folder={folder} />
         ))}
       </div>
       <div className={styles.folderWrapper}>
         {folder?.files?.map((file) => (
-          <File key={file.id} file={file} />
+          <SharedFile key={file.id} file={file} />
         ))}
       </div>
     </div>
   );
 }
 
-export default FolderContent;
+export default SharedFolderContent;

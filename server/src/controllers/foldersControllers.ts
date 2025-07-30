@@ -31,6 +31,10 @@ const createNewFolder = async (req: Request, res: Response) => {
 };
 
 const getFolderContent = async (req: Request, res: Response) => {
+  if (!req.user?.id) {
+    return res.status(401).json({ error: "Unauthorized: No user ID." });
+  }
+
   try {
     const result = await prisma.folder.findUnique({
       where: {
@@ -167,6 +171,29 @@ const deleteFolder = async (req: Request, res: Response) => {
   }
 };
 
+const getSharedFolder = async (req: Request, res: Response) => {
+  try {
+    const result = await prisma.folder.findUnique({
+      where: {
+        id: req.params.folderid,
+      },
+      include: {
+        files: true,
+        children: true,
+      },
+    });
+
+    if (result) {
+      res.status(200).json({ folder: result });
+    } else {
+      throw new Error("Folder could not be fetched");
+    }
+  } catch (err) {
+    console.error("Server Error fetching folder: ", err);
+    res.status(500).json({ error: err });
+  }
+};
+
 export {
   createNewFolder,
   getFolderContent,
@@ -174,4 +201,5 @@ export {
   getRootFolder,
   deleteFolder,
   getRootFolderIdPublic,
+  getSharedFolder,
 };

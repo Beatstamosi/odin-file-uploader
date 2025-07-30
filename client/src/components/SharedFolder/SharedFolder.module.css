@@ -1,0 +1,72 @@
+.folderWrapper {
+  width: 260px;
+  min-height: 80px;
+  background-color: #f4f4f4;
+  border-radius: 8px;
+  padding: 12px 16px;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  transition: background-color 0.2s ease;
+}
+
+.folderWrapper:hover {
+  background-color: #e6f0ff;
+}
+
+.folderWrapper p {
+  flex: 1;
+  margin: 0;
+  font-weight: 600;
+  font-size: 1rem;
+  word-break: break-word;
+}
+
+.menu {
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.menu:hover {
+  transform: scale(1.2);
+}
+
+.optionsMenu {
+  position: absolute;
+  top: 100%;
+  right: 10px;
+  width: 180px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  z-index: 10;
+  overflow: hidden;
+  margin-top: 6px;
+}
+
+.optionsMenu button {
+  all: unset;
+  width: 100%;
+  padding: 10px 15px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.95em;
+  font-weight: 500;
+  color: #333;
+  transition: background-color 0.2s ease;
+}
+
+.optionDelete:hover {
+  background-color: #f44336;
+  color: #fff;
+}
+
+.optionShare:hover {
+  background-color: #2196f3;
+  color: #fff;
+}

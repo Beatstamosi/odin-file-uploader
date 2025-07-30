@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 
 type FolderPathProps = {
   folder: FolderType;
+  shared: boolean | undefined;
 };
 
 type Path = {
@@ -12,7 +13,7 @@ type Path = {
   id: string | undefined;
 };
 
-function FolderPath({ folder }: FolderPathProps) {
+function FolderPath({ folder, shared = undefined }: FolderPathProps) {
   const [path, setPath] = useState<Path[]>();
 
   useEffect(() => {
@@ -41,7 +42,11 @@ function FolderPath({ folder }: FolderPathProps) {
     <div className={styles.pathWrapper}>
       {path?.map((element, index) => (
         <span key={element.id} className={styles.pathElement}>
-          <Link to={`/${element.id}`}>{element.name}</Link>
+          {shared ? (
+            <Link to={`/share/${element.id}`}>{element.name}</Link>
+          ) : (
+            <Link to={`/${element.id}`}>{element.name}</Link>
+          )}
           {index < path.length - 1 && <span>{">"}</span>}
         </span>
       ))}

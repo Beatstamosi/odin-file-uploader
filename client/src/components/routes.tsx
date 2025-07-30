@@ -6,6 +6,7 @@ import SignUp from "./Authentication/Sign Up/SignUp.jsx";
 import RequireAuth from "./Authentication/RequireAuth.jsx";
 import Home from "./Home/Home.js";
 import FolderContent from "./FolderContent/FolderContent.js";
+import SharedFolderContent from "./SharedFolderContent/SharedFolderContent.js";
 
 const routes = [
   {
@@ -42,6 +43,10 @@ const routes = [
         <LogOut />
       </RequireAuth>
     ),
+  },
+  {
+    path: "/share/:folderId",
+    element: <SharedFolderContent />,
   },
   {
     path: "/error",
