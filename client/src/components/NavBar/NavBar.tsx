@@ -1,7 +1,9 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../Authentication/useAuth.jsx";
 import LogOut from "../Authentication/LogOut/LogOut.jsx";
 import style from "./NavBar.module.css";
+import { useEffect, useState } from "react";
+import type { FolderType } from "../Authentication/types/User.js";
 
 type NavBarProps = {
   openDialogNewFolder: () => void;
@@ -10,6 +12,45 @@ type NavBarProps = {
 
 function NavBar({ openDialogNewFolder, openDialogUploadFile }: NavBarProps) {
   const { user, loading, isAuthenticated } = useAuth();
+  const [folder, setFolder] = useState<FolderType>();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchFolder = async () => {
+      try {
+        const res = await fetch(
+          `${import.meta.env.VITE_API_BASE_URL}/folders/get-home-folder`,
+          {
+            method: "GET",
+            credentials: "include",
+          }
+        );
+
+        const data = await res.json();
+
+        if (res.ok) {
+          setFolder(data.folder);
+        } else {
+          navigate("/error");
+        }
+      } catch (err) {
+        console.error("Error fetching folder: ", err);
+      }
+    };
+
+    fetchFolder();
+  }, [navigate]);
+
+  const shareHomeFolder = async () => {
+    try {
+      await navigator.clipboard.writeText(
+        `http://localhost:5173/share/${folder?.id}`
+      );
+      alert("Link to share folder copied to ClipBoard");
+    } catch (err) {
+      console.error("Failed to copy Link to clipboard: ", err);
+    }
+  };
 
   if (loading) return <h1>Loading...</h1>;
 
@@ -24,6 +65,9 @@ function NavBar({ openDialogNewFolder, openDialogUploadFile }: NavBarProps) {
 
           {isAuthenticated && (
             <>
+              <button onClick={shareHomeFolder} className={style.btn}>
+                Share Home Folder
+              </button>
               <button onClick={openDialogNewFolder} className={style.btn}>
                 New Folder
               </button>
