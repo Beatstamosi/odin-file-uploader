@@ -10,6 +10,7 @@
   gap: 10px;
   align-items: flex-start;
   transition: background-color 0.2s ease;
+  margin: 20px;
 }
 
 .folderWrapper:hover {
