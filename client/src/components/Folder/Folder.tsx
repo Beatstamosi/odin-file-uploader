@@ -53,7 +53,7 @@ function Folder({ folder }: FolderProps) {
       );
 
       if (res.ok) {
-        navigate(-1);
+        navigate(0);
       }
     } catch (err) {
       console.error(err);

@@ -1,6 +1,37 @@
-import { Request, response, Response } from "express";
+import { Request, Response } from "express";
 import prisma from "../lib/prisma.js";
 import { getRootFolderId } from "../services/getRootFolderId.js";
+import { supabase } from "../services/supabaseClient.js";
+
+// Helper function to recursively collect all file paths inside folder
+const collectAllFilePaths = async (prefix: string): Promise<string[]> => {
+  const allFilePaths: string[] = [];
+
+  // Get list of items (both files and subfolders)
+  const { data: items, error } = await supabase.storage
+    .from("files")
+    .list(prefix, { limit: 1000 });
+
+  if (error) {
+    throw new Error(`Error listing files in ${prefix}: ${error.message}`);
+  }
+
+  for (const item of items) {
+    if (item.name) {
+      if (item.metadata?.mimetype) {
+        // This is a file
+        allFilePaths.push(`${prefix}${item.name}`);
+      } else {
+        // This is a folder — recurse
+        const subfolderPrefix = `${prefix}${item.name}/`;
+        const nestedPaths = await collectAllFilePaths(subfolderPrefix);
+        allFilePaths.push(...nestedPaths);
+      }
+    }
+  }
+
+  return allFilePaths;
+};
 
 const createNewFolder = async (req: Request, res: Response) => {
   if (!req.user?.id) {
@@ -148,26 +179,46 @@ const deleteFolder = async (req: Request, res: Response) => {
     return res.status(401).json({ error: "Unauthorized: No user ID." });
   }
 
-  if (!req.params?.folderid) {
-    return res.status(401).json({ error: "Missing folder id" });
+  const folderId = req.params?.folderid;
+  if (!folderId) {
+    return res.status(400).json({ error: "Missing folder id" });
   }
 
+  const folderPrefix = `folder-${folderId}/`;
+
   try {
+    // Recursively collect all file paths inside folder
+    const allFilePaths = await collectAllFilePaths(folderPrefix);
+
+    // 🧹 Delete all files
+    if (allFilePaths.length > 0) {
+      const { error: deleteError } = await supabase.storage
+        .from("files")
+        .remove(allFilePaths);
+
+      if (deleteError) {
+        console.error(
+          "Failed to delete files from storage:",
+          deleteError.message
+        );
+        return res
+          .status(500)
+          .json({ error: "Failed to delete files from storage" });
+      }
+    }
+
+    // Delete folder record from database
     const result = await prisma.folder.delete({
       where: {
         ownerId: req.user?.id,
-        id: req.params.folderid,
+        id: folderId,
       },
     });
 
-    if (result) {
-      res.status(201).json({ folder: result });
-    } else {
-      throw new Error("Folder could not be deleted.");
-    }
+    return res.status(200).json({ folder: result });
   } catch (err) {
-    console.error("Error deleting folder: ", err);
-    throw err;
+    console.error("Error deleting folder recursively:", err);
+    return res.status(500).json({ error: "Failed to delete folder" });
   }
 };
 
