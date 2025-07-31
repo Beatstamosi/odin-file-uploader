@@ -4,7 +4,7 @@ import { getRootFolderId } from "../services/getRootFolderId.js";
 import { supabase } from "../services/supabaseClient.js";
 
 // Helper function to recursively collect all file paths inside folder
-const collectAllFilePaths = async (prefix: string): Promise<string[]> => {
+const collectAllFilePaths = async (prefix: string) => {
   const allFilePaths: string[] = [];
 
   // Get list of items (both files and subfolders)
@@ -190,7 +190,7 @@ const deleteFolder = async (req: Request, res: Response) => {
     // Recursively collect all file paths inside folder
     const allFilePaths = await collectAllFilePaths(folderPrefix);
 
-    // 🧹 Delete all files
+    // Delete all files
     if (allFilePaths.length > 0) {
       const { error: deleteError } = await supabase.storage
         .from("files")
