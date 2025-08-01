@@ -79,19 +79,21 @@ Create a `.env` file:
 
 Check .env.example for necessary environment variables.
 
+---
+
 ### Install & Run
 
-# Backend
+##### Backend
 
 cd server
 npm install
 
-# Frontend
+##### Frontend
 
 cd client
 npm install
 
-# main folder
+##### main folder
 
 npm install
 npm run dev from main folder to run backend and frontend simultaneously.
