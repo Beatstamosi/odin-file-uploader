@@ -96,6 +96,8 @@ npm install
 ##### main folder
 
 npm install
-npm run dev from main folder to run backend and frontend simultaneously.
+"npm run dev" from main folder to run backend and frontend simultaneously.
+
+---
 
 Project built as part of The Odin Project curriculum.
