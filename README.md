@@ -77,24 +77,22 @@ This is a full-stack file management app inspired by [The Odin Project's File Up
 
 Create a `.env` file:
 
-```env
-DATABASE_URL=postgresql://user:password@localhost:5432/yourdb
-SESSION_SECRET=your_session_secret
-SUPABASE_URL=https://xyz.supabase.co
-SUPABASE_KEY=your_service_role_key
-SUPABASE_BUCKET=your_bucket_name
+Check .env.example for necessary environment variables.
 
 ### Install & Run
 
 # Backend
+
 cd server
 npm install
 
 # Frontend
+
 cd client
 npm install
 
 # main folder
+
 npm install
 npm run dev from main folder to run backend and frontend simultaneously.
 
